@@ -1,0 +1,91 @@
+.presence-mode {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #0f1419;
+}
+
+.video-section {
+    flex: 1;
+    overflow: hidden;
+}
+
+.controls-section {
+    background: #1a202c;
+    padding: 20px;
+    border-top: 1px solid #2d3748;
+}
+
+.room-info {
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.room-label {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    margin-right: 10px;
+}
+
+.room-code {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #667eea;
+    letter-spacing: 2px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #4a5568;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+.control-btn.off {
+    background: #e53e3e;
+}
+
+.leave-btn {
+    background: #e53e3e;
+}
+
+.leave-btn:hover {
+    background: #c53030;
+}
+
+@media (max-width: 768px) {
+    .controls-section {
+        padding: 15px;
+    }
+
+    .control-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1.5rem;
+    }
+
+    .room-code {
+        font-size: 1rem;
+    }
+}

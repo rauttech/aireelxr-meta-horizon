@@ -1,0 +1,184 @@
+.room-join {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.room-join-container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin: 0 0 10px 0;
+  color: #333;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin: 0 0 40px 0;
+}
+
+.join-options {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.option-card {
+  text-align: center;
+}
+
+.option-card h2 {
+  font-size: 1.5rem;
+  margin: 0 0 20px 0;
+  color: #444;
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #48bb78;
+  color: white;
+  margin-top: 15px;
+}
+
+.btn-secondary:hover {
+  background: #38a169;
+}
+
+.btn-large {
+  padding: 18px 40px;
+  font-size: 1.2rem;
+}
+
+.room-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.room-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.divider {
+  text-align: center;
+  color: #999;
+  font-weight: 600;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.room-code {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f7fafc;
+  border-radius: 10px;
+}
+
+.room-code p {
+  margin: 0 0 10px 0;
+  color: #666;
+  font-weight: 600;
+}
+
+.code-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #667eea;
+  letter-spacing: 5px;
+  margin-bottom: 15px;
+}
+
+.info-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.info-text {
+  text-align: center;
+  color: #718096;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .room-join-container {
+    padding: 30px 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .btn-large {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+  }
+
+  .code-display {
+    font-size: 2rem;
+  }
+}
