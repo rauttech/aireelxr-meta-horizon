@@ -47,7 +47,7 @@ export function VideoGrid({ localStream, remoteStreams, localMuted, localVideoOf
                 )}
             </div>
 
-            {remoteStreamArray.map(([peerId, stream]) => (
+            {remoteStreamArray.map(([peerId, _stream]) => (
                 <div key={peerId} className="video-container remote">
                     <video
                         ref={(el) => {
