@@ -14,7 +14,7 @@
  */
 
 // Configuration - UPDATE THESE VALUES
-const WEB_SURFACE_URL = 'https://your-deployed-app.vercel.app';
+const WEB_SURFACE_URL = 'https://aireelxr-meta-horizon.vercel.app';
 const DEFAULT_ROOM_PREFIX = 'horizon';
 
 /**
