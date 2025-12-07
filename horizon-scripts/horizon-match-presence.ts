@@ -1,150 +1,122 @@
-/**
- * Horizon World Script - Video Presence Integration
- * 
- * INSTRUCTIONS FOR USE:
- * 1. Open Horizon Desktop Editor
- * 2. Create a new Script component
- * 3. Copy this entire file content into the script editor
- * 4. Attach to a World Object or UI element
- * 5. Configure the WEB_SURFACE_URL constant with your deployed web client URL
- * 
-    const url = `${WEB_SURFACE_URL}?room=${finalRoomId}&source=horizon`;
-
-    // Set Web Surface URL
-    webSurfaceObject.setUrl(url);
-
-    console.log(`[Presence] Initialized Web Surface with room: ${finalRoomId}`);
-    return finalRoomId;
-}
+import * as hz from 'horizon/core';
+import { PropTypes, WebSurface } from 'horizon/core';
 
 /**
- * Generate a unique room ID
+ * Video Presence System
+ * Integrates Horizon World with WebRTC video calling web app
  */
-export function generateRoomId(): string {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 6);
-    return `${DEFAULT_ROOM_PREFIX}-${timestamp}-${random}`.toUpperCase();
-}
 
-/**
- * Handle button click to start video presence
- * Attach this to a button's onClick event
- */
-export function onStartPresenceClick(player: any, webSurfaceObject: any) {
-    const roomId = initializeWebSurface(webSurfaceObject);
+const WEB_SURFACE_URL = 'https://aireelxr-meta-horizon-7hntn24zc-rauttechs-projects.vercel.app';
+const ROOM_PREFIX = 'HOLORoom-';
 
-    // Optional: Store room ID in player data
-    player.setCustomData('currentRoomId', roomId);
-
-    // Optional: Broadcast to other players
-    broadcastPresenceEvent('presence-started', {
-        playerId: player.id,
-        roomId: roomId,
-    });
-
-    console.log(`[Presence] Player ${player.id} started presence in room ${roomId}`);
-}
-
-/**
- * Handle button click to join existing room
- */
-export function onJoinRoomClick(player: any, webSurfaceObject: any, roomId: string) {
-    if (!roomId || roomId.trim() === '') {
-        console.error('[Presence] Invalid room ID');
-        return;
-    }
-
-    initializeWebSurface(webSurfaceObject, roomId);
-    player.setCustomData('currentRoomId', roomId);
-
-    console.log(`[Presence] Player ${player.id} joined room ${roomId}`);
-}
-
-/**
- * Handle button click to leave presence
- */
-export function onLeavePresenceClick(player: any, webSurfaceObject: any) {
-    const roomId = player.getCustomData('currentRoomId');
-
-    // Reset Web Surface to default or blank
-    webSurfaceObject.setUrl('about:blank');
-
-    // Clear player data
-    player.setCustomData('currentRoomId', null);
-
-    // Broadcast leave event
-    if (roomId) {
-        broadcastPresenceEvent('presence-ended', {
-            playerId: player.id,
-            roomId: roomId,
-        });
-    }
-
-    console.log(`[Presence] Player ${player.id} left presence`);
-}
-
-/**
- * Broadcast presence event to all players
- * Uses World Broadcast API
- */
-export function broadcastPresenceEvent(eventType: string, data: any) {
-    // World Broadcast API (Horizon-specific)
-    // This is a placeholder - actual implementation depends on Horizon API
-    if (typeof world !== 'undefined' && world.broadcast) {
-        world.broadcast(eventType, data);
-    }
-}
-
-/**
- * Handle incoming presence events from other players
- */
-export function onPresenceEventReceived(eventType: string, data: any) {
-    console.log(`[Presence] Received event: ${eventType}`, data);
-
-    switch (eventType) {
-        case 'presence-started':
-            console.log(`Player ${data.playerId} started presence in room ${data.roomId}`);
-            break;
-        case 'presence-ended':
-            console.log(`Player ${data.playerId} ended presence`);
-            break;
-        default:
-            console.log(`Unknown event type: ${eventType}`);
-    }
-}
-
-/**
- * Save a memory snapshot
- * This could trigger a screenshot or recording
- */
-export function onSaveMemoryClick(player: any) {
-    const roomId = player.getCustomData('currentRoomId');
-
-    if (!roomId) {
-        console.error('[Memory] No active presence session');
-        return;
-    }
-
-    const memory = {
-        playerId: player.id,
-        roomId: roomId,
-        timestamp: new Date().toISOString(),
-        location: player.getPosition(),
+class VideoPresence extends hz.Component<typeof VideoPresence> {
+    static propsDefinition = {
+        // Reference to the Web Surface object
+        webSurface: PropTypes.Entity,
+        // Current room ID
+        currentRoomId: PropTypes.String,
+        // Auto-connect on start
+        autoConnect: PropTypes.Boolean
     };
 
-    // Store memory (implementation depends on your backend)
-    console.log('[Memory] Saved:', memory);
+    preStart() {
+        this.props.currentRoomId = '';
+        this.props.autoConnect = false;
 
-    // Broadcast memory event
-    broadcastPresenceEvent('memory-saved', memory);
+        // Listen for network events
+        this.connectNetworkBroadcastEvent('videoPresence.emotion', this.onEmotionReceived.bind(this));
+        this.connectNetworkBroadcastEvent('videoPresence.join', this.onJoinRoomReceived.bind(this));
+    }
+
+    start() {
+        console.log('[VideoPresence] System initialized');
+
+        // Auto-connect if configured
+        if (this.props.autoConnect) {
+            this.createRoom();
+        }
+    }
+
+    /**
+     * Create a new video room
+     */
+    public createRoom() {
+        const roomId = this.generateRoomId();
+        this.joinRoom(roomId);
+    }
+
+    /**
+     * Join a specific room
+     */
+    public joinRoom(roomId: string) {
+        if (!roomId) return;
+
+        this.props.currentRoomId = roomId;
+        this.updateWebSurface(roomId);
+
+        // Notify others execution
+        this.sendNetworkBroadcastEvent('videoPresence.join', {
+            roomId,
+            playerId: hz.World.getLocalPlayer()?.id.toString()
+        });
+
+        console.log(`[VideoPresence] Joined room: ${roomId}`);
+    }
+
+    /**
+     * Leave current room
+     */
+    public leaveRoom() {
+        this.props.currentRoomId = '';
+
+        if (this.props.webSurface) {
+            const webSurface = this.props.webSurface.as(WebSurface);
+            if (webSurface) {
+                webSurface.url = 'about:blank';
+            }
+        }
+    }
+
+    /**
+     * Update Web Surface URL
+     */
+    private updateWebSurface(roomId: string) {
+        if (!this.props.webSurface) {
+            console.warn('[VideoPresence] No Web Surface assigned!');
+            return;
+        }
+
+        const webSurface = this.props.webSurface.as(WebSurface);
+        if (webSurface) {
+            // Construct full URL with room parameter
+            const fullUrl = `${WEB_SURFACE_URL}?room=${roomId}&source=horizon_world`;
+            webSurface.url = fullUrl;
+            console.log(`[VideoPresence] Loading URL: ${fullUrl}`);
+        }
+    }
+
+    /**
+     * Generate a unique room ID
+     */
+    private generateRoomId(): string {
+        const timestamp = Date.now().toString(36);
+        const random = Math.floor(Math.random() * 1000).toString(36);
+        return `${ROOM_PREFIX}${timestamp}${random}`.toUpperCase();
+    }
+
+    /**
+     * Handle emotion events from other players
+     * For syncing with web app (optional implementation)
+     */
+    private onEmotionReceived(event: { emotion: string; playerId: string }) {
+        // Could forward to web app via URL parameters or postMessage if supported
+        console.log(`[VideoPresence] Emotion received: ${event.emotion} from ${event.playerId}`);
+    }
+
+    private onJoinRoomReceived(event: { roomId: string; playerId: string }) {
+        console.log(`[VideoPresence] Player ${event.playerId} joined room ${event.roomId}`);
+    }
 }
 
-// Example usage in Horizon Editor:
-// 1. Create a Web Surface object named "VideoPresencePanel"
-// 2. Create buttons: "Start Call", "Join Room", "Leave", "Save Memory"
-// 3. Attach this script to a world object
-// 4. In button onClick events, call:
-//    - onStartPresenceClick(player, VideoPresencePanel)
-//    - onJoinRoomClick(player, VideoPresencePanel, roomIdInput.value)
-//    - onLeavePresenceClick(player, VideoPresencePanel)
-//    - onSaveMemoryClick(player)
+// Register component
+hz.Component.register(VideoPresence);
