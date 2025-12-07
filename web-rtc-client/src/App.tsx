@@ -15,6 +15,9 @@ function App() {
     const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(new Map());
     const [audioEnabled, setAudioEnabled] = useState(true);
     const [videoEnabled, setVideoEnabled] = useState(true);
+    // New state for Horizon controls
+    const [isChatVisible, setIsChatVisible] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     // Check for URL parameters (for Web Surface embedding)
@@ -22,6 +25,14 @@ function App() {
         const params = new URLSearchParams(window.location.search);
         const urlRoomId = params.get('room');
         const urlToken = params.get('token');
+
+        // Parse Horizon params
+        if (params.has('chat')) {
+            setIsChatVisible(params.get('chat') === 'true');
+        }
+        if (params.has('theme')) {
+            setIsDarkMode(params.get('theme') !== 'light');
+        }
 
         if (urlRoomId) {
             handleJoinRoom(urlRoomId, urlToken || undefined);
@@ -142,6 +153,8 @@ function App() {
                     audioEnabled={audioEnabled}
                     videoEnabled={videoEnabled}
                     roomId={roomId}
+                    isChatVisible={isChatVisible}
+                    isDarkMode={isDarkMode}
                 />
             )}
         </div>

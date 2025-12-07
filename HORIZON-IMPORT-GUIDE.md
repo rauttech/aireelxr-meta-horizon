@@ -100,11 +100,16 @@ You'll copy-paste 4 scripts from your Git folder into Horizon.
 6. Paste into Horizon UI Editor
 7. Click **"Apply"**
 8. **Link buttons to script:**
-   - Select **Heart Button** → Event: `Click` → Function: `OnHeartButtonClick` → Script: `UIHandlers`
+   - Select **Heart Button** → Event: `Click` → Function: `OnHeartButtonClick` → Script: `UIHandlers` (or `emotion-system`)
    - Select **Smile Button** → Event: `Click` → Function: `OnSmileButtonClick` → Script: `UIHandlers`
    - Select **Laugh Button** → Event: `Click` → Function: `OnLaughButtonClick` → Script: `UIHandlers`
    - Select **Sad Button** → Event: `Click` → Function: `OnSadButtonClick` → Script: `UIHandlers`
-9. Select the NoesisUI Panel object → In properties, attach `UIHandlers` script
+   
+   **✨ NEW Video Controls:**
+   - Create Button named `ToggleChatButton` → Event: `Click` → Link to Script
+   - Create Button named `ThemeButton` → Event: `Click` → Link to Script
+
+9. Select the NoesisUI Panel object → In properties, attach `emotion-system` script
 
 ### **D. Add AI NPC "Holo"**
 

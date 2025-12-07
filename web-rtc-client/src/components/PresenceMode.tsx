@@ -10,7 +10,10 @@ interface PresenceModeProps {
     audioEnabled: boolean;
     videoEnabled: boolean;
     roomId: string;
+    isChatVisible: boolean;
+    isDarkMode: boolean;
 }
+
 
 export function PresenceMode({
     localStream,
@@ -21,9 +24,11 @@ export function PresenceMode({
     audioEnabled,
     videoEnabled,
     roomId,
+    isChatVisible,
+    isDarkMode,
 }: PresenceModeProps) {
     return (
-        <div className="presence-mode">
+        <div className={`presence-mode ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
             <div className="video-section">
                 <VideoGrid
                     localStream={localStream}
@@ -65,6 +70,12 @@ export function PresenceMode({
                     </button>
                 </div>
             </div>
+            {isChatVisible && (
+                <div className="chat-panel-placeholder">
+                    <h3>Chat</h3>
+                    <p>Chat is active...</p>
+                </div>
+            )}
         </div>
     );
 }
