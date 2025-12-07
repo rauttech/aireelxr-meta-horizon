@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd web-rtc-client && npm install && npm run build",
+  "outputDirectory": "web-rtc-client/dist",
+  "framework": "vite",
+  "installCommand": "cd web-rtc-client && npm install",
+  "devCommand": "cd web-rtc-client && npm run dev"
+}
