@@ -1,32 +1,52 @@
 import { Player } from 'horizon/core';
 
 /**
- * Video Presence
+ * Video Presence (Enhanced)
  */
 
 const BASE_URL = 'https://aireelxr-meta-horizon-7hntn24zc-rauttechs-projects.vercel.app';
+let currentRoom = "";
+let isChatVisible = true;
+let isDarkMode = true;
 
-// Removed WebSurface import as it causes compilation error
-// Using 'any' type for the surface object
-export function createRoom(webSurface: any, player: Player) {
+// Helper to update URL
+function updateSurface(webSurface: any) {
     if (!webSurface) return;
 
-    try {
-        // Create random room
-        const roomId = 'ROOM_' + Math.floor(Math.random() * 9999);
-        const url = BASE_URL + '?room=' + roomId;
+    // Construct simplified URL params
+    const params = [
+        `room=${currentRoom}`,
+        `chat=${isChatVisible}`,
+        `theme=${isDarkMode ? 'dark' : 'light'}`
+    ].join('&');
 
-        // Check if property exists before setting
-        if ('url' in webSurface) {
-            webSurface.url = url;
-            console.log("Created room: " + roomId);
-        } else if (typeof webSurface.setUrl === 'function') {
-            webSurface.setUrl(url); // Method fallback
-            console.log("Created room (method): " + roomId);
-        }
+    const fullUrl = `${BASE_URL}?${params}`;
+
+    try {
+        if ('url' in webSurface) webSurface.url = fullUrl;
+        else if (webSurface.setUrl) webSurface.setUrl(fullUrl);
+        console.log("Video updated: " + params);
     } catch (e) {
-        console.error("Error setting URL: " + e);
+        console.error("Failed to update surface: " + e);
     }
 }
 
-console.log("Video Presence Loaded");
+export function createRoom(webSurface: any, player: Player) {
+    // Generate new room
+    currentRoom = 'ROOM_' + Math.floor(Math.random() * 9999);
+    updateSurface(webSurface);
+}
+
+export function toggleChat(webSurface: any) {
+    isChatVisible = !isChatVisible;
+    console.log("Chat is now: " + (isChatVisible ? "ON" : "OFF"));
+    updateSurface(webSurface);
+}
+
+export function toggleTheme(webSurface: any) {
+    isDarkMode = !isDarkMode;
+    console.log("Theme is now: " + (isDarkMode ? "DARK" : "LIGHT"));
+    updateSurface(webSurface);
+}
+
+console.log("Video Presence (Enhanced) Loaded");

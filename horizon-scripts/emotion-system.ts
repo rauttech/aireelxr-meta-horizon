@@ -1,34 +1,40 @@
-import { Color, Player } from 'horizon/core';
+import { Player, Color } from 'horizon/core';
 
 /**
- * Emotion System
+ * Emotion System & World Controls
  */
 
-// Colors: R, G, B (Horizon Color constructor takes 3 args)
+// Colors: R, G, B
 const COLOR_HEART = new Color(1.0, 0.2, 0.4);
 const COLOR_SMILE = new Color(1.0, 0.9, 0.2);
-const COLOR_LAUGH = new Color(0.2, 1.0, 0.4);
-const COLOR_SAD = new Color(0.3, 0.5, 1.0);
 
 export function setupEmotionPanel(uiObject: any, player: Player) {
     if (!uiObject || !player) return;
 
-    console.log("Setting up emotions for " + player.name);
+    console.log("Setting up UI for " + player.name);
 
-    // Helper to attach event safely
-    const attachClick = (name: string, message: string) => {
+    // Helper to safely attach
+    const attach = (name: string, callback: () => void) => {
         try {
             const btn = uiObject.find(name);
-            if (btn && btn.onClick) {
-                btn.onClick.add(() => console.log(message));
-            }
+            if (btn) btn.onClick.add(callback);
         } catch (e) { }
     };
 
-    attachClick('HeartButton', "Heart ❤️");
-    attachClick('SmileButton', "Smile 😊");
-    attachClick('LaughButton', "Laugh 😂");
-    attachClick('SadButton', "Sad 😢");
+    // Emotions
+    attach('HeartButton', () => console.log("Heart <3"));
+    attach('SmileButton', () => console.log("Smile :)"));
+
+    // NEW: World Controls (Chat & Environment)
+    attach('ToggleChatButton', () => {
+        console.log("Toggling Chat...");
+        // This would call into the video presence script logic
+        // For now we log, as we can't cross-import easily without modules
+    });
+
+    attach('ThemeButton', () => {
+        console.log("Switching Environment Theme...");
+    });
 }
 
-console.log("Emotion System Loaded");
+console.log("Emotion System + World Controls Loaded");

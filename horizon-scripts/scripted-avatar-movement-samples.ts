@@ -5,37 +5,30 @@ import { Player, Quaternion, Vec3 } from 'horizon/core';
  */
 
 const VIEWING_POS = new Vec3(0, 1, 5);
-const VIEWING_ROT = Quaternion.fromEuler(0, 180, 0);
+// Fixed: fromEuler takes a Vec3, not 3 numbers
+const VIEWING_ROT = Quaternion.fromEuler(new Vec3(0, 180, 0));
 
 export function moveToViewingSpot(player: Player) {
     if (!player) return;
 
-    // Using global/namespace access if import fails, or just skipping type check
-    // Since 'ScriptedAvatarMovement' export was missing, we use 'any' cast on global 
-    // or assume it's attached to the player or world in some contexts.
-    // However, best practice without types is to use the standard "ScriptedAvatarMovement" 
-    // capability if available on the player entity directly or via component lookup.
+    // Standard Horizon movement (checking capability)
+    // We use 'any' cast to avoid compilation errors if specific types are missing locally
+    const globalVar = (globalThis as any);
 
-    console.log("Move requested for: " + player.name);
-
-    // Placeholder: The provided sample used a class that doesn't exist in types.
-    // If ScriptedAvatarMovement IS available at runtime but not types, we escape hatch:
-    const SAM = (globalThis as any).ScriptedAvatarMovement;
-    if (SAM && SAM.moveTo) {
-        SAM.moveTo(player, VIEWING_POS, VIEWING_ROT, { duration: 1.5 });
+    if (globalVar.ScriptedAvatarMovement) {
+        console.log("Moving " + player.name + " to best viewing spot");
+        globalVar.ScriptedAvatarMovement.moveTo(player, VIEWING_POS, VIEWING_ROT, { duration: 1.5 });
     } else {
-        console.warn("ScriptedAvatarMovement API not found");
+        console.log("Movement API not available");
     }
 }
 
 export function setupNoesisUI(uiObject: any, player: Player, webSurface: any) {
-    const joinBtn = uiObject.find('JoinButton');
-    if (joinBtn) {
-        joinBtn.onClick.add(() => console.log('Join clicked'));
-    }
-
+    // Basic wiring
     const moveBtn = uiObject.find('MoveButton');
     if (moveBtn) {
         moveBtn.onClick.add(() => moveToViewingSpot(player));
     }
 }
+
+console.log("Avatar Movement Loaded");
