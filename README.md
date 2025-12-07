@@ -12,7 +12,10 @@ AaireelXR — Horizon Video Presence is a production-ready solution that enables
 - 🌐 **Horizon Integration**: TypeScript scripts and Noesis UI templates for seamless in-world integration
 - 🔒 **Secure Signaling**: JWT-authenticated signaling server with TURN/STUN support
 - 📱 **Mobile-Optimized**: Responsive UI designed for Quest and mobile browsers
-- 🎭 **Presence Modes**: Avatar movement and world broadcast integration
+- ✨ **Holographic Avatars**: Semi-transparent holograms with anti-gravity bobbing and rotation
+- 🎭 **Emotion Broadcasting**: 4-button emotion system (Heart, Smile, Laugh, Sad) with particle effects
+- 🤖 **AI NPC Guide**: GenAI-powered virtual assistant for onboarding and help
+- 👥 **Multi-User Sync**: Real-time emotion and presence synchronization across all players
 - 🧪 **Fully Tested**: Comprehensive unit and E2E test coverage
 
 ## Architecture
