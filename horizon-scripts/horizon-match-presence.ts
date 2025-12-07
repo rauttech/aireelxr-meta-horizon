@@ -8,20 +8,6 @@
  * 4. Attach to a World Object or UI element
  * 5. Configure the WEB_SURFACE_URL constant with your deployed web client URL
  * 
- * DEPENDENCIES:
- * - Web Surface object in your world
- * - Deployed AaireelXR web client (see deployment docs)
- */
-
-// Configuration - UPDATE THESE VALUES
-const WEB_SURFACE_URL = 'https://your-deployed-app.vercel.app';
-const DEFAULT_ROOM_PREFIX = 'horizon';
-
-/**
- * Initialize Web Surface with video presence app
- */
-export function initializeWebSurface(webSurfaceObject: any, roomId?: string) {
-    const finalRoomId = roomId || generateRoomId();
     const url = `${WEB_SURFACE_URL}?room=${finalRoomId}&source=horizon`;
 
     // Set Web Surface URL
